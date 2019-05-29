@@ -10,17 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190529144304) do
+ActiveRecord::Schema.define(version: 2019_05_29_173610) do
 
   create_table "opportunities", force: :cascade do |t|
-    t.string  "org_title"
-    t.string  "summary"
+    t.string "org_title"
+    t.string "summary"
     t.integer "zipcode"
-    t.string  "borough"
-    t.string  "category_desc"
+    t.string "category_desc"
     t.integer "vol_requests"
-    t.string  "recurrence_type"
-    t.string  "start_date"
+    t.string "recurrence_type"
+    t.string "start_date"
+    t.string "title"
   end
 
   create_table "signups", force: :cascade do |t|
@@ -29,10 +29,8 @@ ActiveRecord::Schema.define(version: 20190529144304) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string  "name"
-    t.integer "zipcode"
-    t.string  "borough"
-    t.integer "age"
+    t.string "name"
+    t.string "email"
   end
 
 end

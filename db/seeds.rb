@@ -1,3 +1,7 @@
+User.destroy_all
+Opportunity.destroy_all
+Signup.destroy_all
+
 
 def get_data()
   api_string = 'https://data.cityofnewyork.us/resource/n4ac-3636.json'
@@ -9,16 +13,16 @@ end
 def populate_opportunities
   get_data.each do |opportunity|
     #binding.pry
-    Opportunity.create(org_title: opportunity["title"], summary: opportunity["summary"], zipcode: opportunity["postalcode"], category_desc: opportunity["category_desc"], vol_requests: opportunity["vol_requests"], recurrence_type: opportunity["recurrence_type"], start_date: opportunity["start_date_date"])
+    Opportunity.create(title: opportunity["title"], org_title: opportunity["org_title"], summary: opportunity["summary"], zipcode: opportunity["postalcode"], category_desc: opportunity["category_desc"], vol_requests: opportunity["vol_requests"], recurrence_type: opportunity["recurrence_type"], start_date: opportunity["start_date_date"])
   end
 end
 
 def populate_users
-  User.create(name: "Emi", zipcode: 12335, age: 6)
-  User.create(name: "Raphi", zipcode: 10003, age: 25)
-  User.create(name: "Steven", zipcode: 10009, age: 23)
-  User.create(name: "Gorbetha", zipcode: 12335, age: 79)
-  User.create(name: "Sam", zipcode: 10023, age: 56)
+  User.create(name: "Emi", email: "emi.katsuta@gmail.com")
+  User.create(name: "Raphi", email: "rsaphra@gmail.com")
+  User.create(name: "Steven", email: "lonely&single@aol.com")
+  User.create(name: "Gorbetha", email: "arghllggl@hotmail.com")
+  User.create(name: "Sam", email: "seargantsam@gmail.com")
 end
 
 populate_users
