@@ -1,3 +1,4 @@
+require 'pry'
 
 def get_data()
   api_string = 'https://data.cityofnewyork.us/resource/n4ac-3636.json'
