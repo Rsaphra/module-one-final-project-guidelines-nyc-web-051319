@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 User.destroy_all
 Opportunity.destroy_all
 Signup.destroy_all
 
+=======
+require 'pry'
+>>>>>>> 6564d2187f7931f274a96acf9e6ae3e4ced57f54
 
 def get_data()
   api_string = 'https://data.cityofnewyork.us/resource/n4ac-3636.json'
