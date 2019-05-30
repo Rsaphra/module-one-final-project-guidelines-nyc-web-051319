@@ -1,8 +1,11 @@
-#FLATIRON CARES
+
+FLATIRON CARES
+======
 
 Flatiron Cares is a CLI application that lets the users search and sign up for various volunteer opportunities in NYC.
 
-##Installation
+Installation
+------
 
 Upon cloning this git repository, it is imperative that you run “rake db:migrate” & “rake db:seed” in order to populate the database from the NYC Open Data API. In order to start the application, run “ruby bin/run.rb” in your terminal.
 
@@ -13,7 +16,8 @@ rake db:seed
 ruby bin/run.rb
 ```
 
-##Functions
+Functions
+------
 
 
 User will be prompted to login to the application with their e-mail address.
@@ -50,12 +54,14 @@ Happy Volunteering!
 
 ![Alt Text](https://media.giphy.com/media/Y8tW6EgVscvGo/giphy.gif)
 
-##Authors
+Authors
+------
 
-* Raphael Saphra - @rsaphra
-* Emi Katsuta - @ekatsuta
+* Raphael Saphra - [@rsaphra](https://github.com/Rsaphra)
+* Emi Katsuta - [@ekatsuta](https://github.com/ekatsuta)
 
-##Acknowledgements
+Acknowledgements
+------
 
 * Thank you Rishi, Charlie & Matt for your support!
 * Created for Flatiron School Mod 1 Project
