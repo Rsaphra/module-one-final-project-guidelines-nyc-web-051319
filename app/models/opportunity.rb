@@ -6,7 +6,9 @@ class Opportunity < ActiveRecord::Base
 
   #returns whether this group has met its capacity
   def isfull?
+    binding.pry
     if self.vol_requests > self.signups.length
+      binding.pry
       return false
     end
     return true
@@ -14,7 +16,13 @@ class Opportunity < ActiveRecord::Base
 
   #returns a list of all signups that are belonging to this opportunity
   def signups
-    Signup.all.select {|signup| signup.user_id == self.id}
+    Signup.all.select {|signup| signup.opportunity_id == self.id}
+  end
+
+  def volunteers
+    signups.map do |signup|
+      signup.user_id
+    end
   end
 
   #returns a random opportunity

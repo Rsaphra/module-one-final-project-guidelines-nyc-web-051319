@@ -4,13 +4,20 @@ class User < ActiveRecord::Base
   has_many :signups
   has_many :opportunities, through: :signups
 
-
-  def signup(opportunity)
+  def verify_signup(opportunity)
     if opportunity.isfull?
       puts "Deepest apologies. This opportunity is full. Please do pick another"
+      return false
     elsif Signup.exists?(self, opportunity)
-      "You are already signed up for this opportunity!"
+      puts "You are already signed up for this opportunity!"
+      return false
     else
+      return true
+    end
+  end
+
+  def signup(opportunity)
+    if verify_signup(opportunity)
       Signup.create(user_id: self.id, opportunity_id: opportunity.id)
     end
   end
@@ -39,6 +46,6 @@ class User < ActiveRecord::Base
 
   def delete_signup(opportunity)
     signup = Signup.where(user_id: self.id, opportunity_id: opportunity.id)
-    Signup.destroy(signup)
+    Signup.destroy(signup.ids)
   end
 end

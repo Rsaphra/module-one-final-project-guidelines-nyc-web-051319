@@ -1,10 +1,10 @@
 #FLATIRON CARES
 
-Flatiron Cares is a simple CLI application that lets the users search for and sign up to various volunteer opportunities in NYC.
+Flatiron Cares is a CLI application that lets the users search and sign up for various volunteer opportunities in NYC.
 
 ##Installation
 
-Upon cloning this git repository, run “rake db:migrate” & “rake db:seed” in order to populate the database from the NYC Open Data API. In order to start the application, run “ruby bin/run.rb” in your terminal.
+Upon cloning this git repository, it is imperative that you run “rake db:migrate” & “rake db:seed” in order to populate the database from the NYC Open Data API. In order to start the application, run “ruby bin/run.rb” in your terminal.
 
 ```console
 rake db:migrate
@@ -28,7 +28,8 @@ Once logged in, the user will be directed to the Main Menu, with 7 different opt
 4. Feeling extra generous!
 5. Top 5 Volunteer Opportunities with most needs
 6. Cancel my volunteer slot
-7. Exit
+7. Display my signups
+8. Exit
 ```
 
 The user can:
@@ -38,7 +39,8 @@ The user can:
  4. Choose to sign up for a randomly selected volunteer opportunity
  5. Choose to sign up for the top 5 volunteer opportunities with most needs
  6. Cancel his/her volunteer slot from a previous signup
- 7. Exit the program
+ 7. Displays all Volunteer opportunities the user has signed up for
+ 8. Exit the program
 
 The program will restrict the user to sign up to the volunteer opportunity if:
  * The volunteer opportunity is at full capacity
@@ -50,7 +52,7 @@ Happy Volunteering!
 
 ##Authors
 
-* Raphael Saphra - @Rsaphra
+* Raphael Saphra - @rsaphra
 * Emi Katsuta - @ekatsuta
 
 ##Acknowledgements

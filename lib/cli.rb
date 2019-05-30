@@ -20,19 +20,56 @@ def welcome
 
 end
 
+def goodbye
+  puts "Thanks for using us!"
+ puts "
+     ***********                  ***********
+  *****************            *****************
+*********************        *********************
+***********************      ***********************
+************************    ************************
+*************************  *************************
+**************************************************
+ ************************************************
+   ********************************************
+     ****************************************
+        **********************************
+          ******************************
+             ************************
+               ********************
+                  **************
+                    **********
+                      ******
+                        **".blink.magenta
+end
+
+def main_menu?
+  puts ""
+  puts "Would you like to go back to the main menu? (y/n)"
+  puts ""
+  confirm = get_confirmation
+  if confirm
+    main_menu
+  else
+    goodbye
+    exit(0)
+  end
+end
+
+#creates a new user, returns nil
 def create_new_user
   puts "Please enter your name:"
   user_name = STDIN.gets.chomp
   puts "Please enter your email address:"
   email_address = STDIN.gets.chomp
-
   User.create(name: user_name, email: email_address)
   $current_user = User.find_by_attribute(:email, email_address)
   puts "Welcome #{user_name}!"
 end
 
+#gets confirmation of y or n from user
 def get_confirmation_create
-  "Would you like to make an account? (y/n)"
+  puts "Would you like to make an account? (y/n)"
   confirm = get_confirmation
   if confirm
     create_new_user
@@ -79,7 +116,8 @@ def main_menu
  puts "4. Feeling extra generous!"
  puts "5. Top 5 Volunteer Opportunities with most needs"
  puts "6. Cancel my volunteer slot"
- puts "7. Exit Program"
+ puts "7. Display my list of volunteer events!!!"
+ puts "8. Exit Program"
  puts ""
  option = STDIN.gets.chomp
  main_menu_selection(option)
@@ -88,7 +126,7 @@ end
 def main_menu_selection(option)
  case option
 
- when "1"
+  when "1"
     search_by_category
   when "2"
     search_by_zipcode
@@ -99,10 +137,15 @@ def main_menu_selection(option)
   when "5"
     get_5_most_desperate
   when "6"
-    delete_signup
+    delete_my_signup
   when "7"
-    puts "Thank you for using us!"
+    display_my_signups
+  when "8"
+    goodbye
     exit(0)
+  else
+    puts "Please enter a valid option number good sir and/or madam."
+    main_menu
   end
 end
 
@@ -110,6 +153,7 @@ end
 ###### Helper Methods #######
 
 def put_break
+  puts ""
   puts "*********************************************"
   puts ""
 end
@@ -128,7 +172,7 @@ def get_confirmation
       confirmation = false
       finished = true
     else
-      puts "Please enter valid input."
+      puts "Please enter y or n"
     end
   end
   confirmation
@@ -140,7 +184,11 @@ def get_index_from_user(opportunity_list)
   input = nil
   while !finished
     input = STDIN.gets.chomp.to_i
-    if input - 1 >= opportunity_list.length || input.class != Integer
+    #index cannot be zero, and ruby interprets to_i of a char to 0,
+    #so that is captured here as well
+    if input == 0
+      puts "Please enter a valid Integer."
+    elsif input - 1 >= opportunity_list.length
       puts "Please enter a valid index."
     else
       finished = true
@@ -155,33 +203,37 @@ def offer_signup(opportunities)
   puts "Would you like to sign up for any Opportunity? (y/n)"
   confirm = get_confirmation
   if confirm
-    puts "Please enter previously listed index."
+    puts "Please enter a previously listed index."
     index = get_index_from_user(opportunities)
     matched_opportunity = opportunities[index]
-    $current_user.signup(matched_opportunity)
+    if $current_user.verify_signup(matched_opportunity)
+      binding.pry
+      $current_user.signup(matched_opportunity)
+      put_break
+      puts "Thank you for signing up for " + "\"#{matched_opportunity.title}!\"".blink.magenta
+    end
     put_break
-    puts "Thank you for signing up for \"#{matched_opportunity.title}!\""
   end
-  main_menu
+  main_menu?
 end
 
-def user_input(type, attribute)
+def user_input(type, compared_list)
   put_break
-  puts "Please enter your #{type}"
+  puts "Please enter your #{type} by index."
   valid_input = false
   user_input = nil
-  attribute_list = Opportunity.list_of_attributes(attribute)
   while !valid_input
-    user_input = STDIN.gets.chomp
-    if user_input == "exit"
-      return "leaving"
-    elsif attribute_list.include?(user_input)
-      valid_input = true
+    user_input = STDIN.gets.chomp.to_i
+    if user_input.class != Integer
+      puts "Please provide an integer."
+    elsif
+      user_input > compared_list.length
+      puts "Please provide a valid index"
     else
-      puts "Not a valid #{type}, O charitable one."
+      valid_input = true
     end
+    user_input
   end
-  user_input
 end
 
 #format string with title and org title
@@ -222,16 +274,21 @@ end
 #displays elements from given list with convenient indexes
 def display_list(list)
   list.each_with_index do |element, i|
-    puts "#{i + 1}. #{element}"
+    puts "#{i + 1}.".bold + " #{element}"
   end
+end
+
+def sorted_list_of_attribute(attribute)
+  Opportunity.list_of_attributes(attribute).sort
 end
 
 #displays all attributes that occur within Opportunities, with indexes
 def display_by_attribute(attribute)
-  attributes = Opportunity.list_of_attributes(attribute).sort
+  attributes = sorted_list_of_attribute(attribute)
   attributes.each_with_index do |a, i|
-    puts "#{i + 1} : #{a}"
+    puts "#{i + 1}.".bold +  " #{a}"
   end
+  attributes
 end
 
 ############ for option 1 #############
@@ -239,9 +296,12 @@ end
 #main search by category method
 def search_by_category
   put_break
-  display_by_attribute(:category_desc)
-  input = user_input("category", :category_desc)
-  opportunities = get_opportunities_from_attribute(:category_desc, input)
+  attributes = display_by_attribute(:category_desc)
+  put_break
+  puts "Search for your desired category by index!"
+  put_break
+  index = get_index_from_user(attributes)
+  opportunities = get_opportunities_from_attribute(:category_desc, attributes[index])
   short_list = format_opportunities(opportunities)
   display_list(short_list)
   #binding.pry
@@ -250,9 +310,28 @@ end
 
 ####### for option 2 ###########
 
+def user_zipcode(type, attribute)
+ put_break
+ puts "Please enter your #{type}"
+ valid_input = false
+ user_input = nil
+ attribute_list = Opportunity.list_of_attributes(attribute)
+ while !valid_input
+   user_input = STDIN.gets.chomp
+   if user_input == "exit"
+     return "leaving"
+   elsif attribute_list.include?(user_input)
+     valid_input = true
+   else
+     puts "Not a valid #{type}, O charitable one."
+   end
+ end
+ user_input
+end
+
 def search_by_zipcode
   put_break
-  input = user_input("zipcode", :zipcode)
+  input = user_zipcode("zipcode", :zipcode)
   short_list = get_opportunities_from_attribute(:zipcode, input)
   opportunities = get_opportunities_from_attribute(:zipcode, input)
   short_list = format_opportunities(opportunities)
@@ -264,13 +343,15 @@ end
 
 def search_by_organization
   put_break
-  display_by_attribute(:org_title)
-  input = user_input("organization", :org_title)
-  opportunities = get_opportunities_from_attribute(:org_title, input)
+  attributes = display_by_attribute(:org_title)
+  put_break
+  puts "Search for your desired organization by index!"
+  put_break
+  index = get_index_from_user(attributes)
+  opportunities = get_opportunities_from_attribute(:org_title, attributes[index])
   short_list = format_opportunities(opportunities)
   display_list(short_list)
   offer_signup(opportunities)
-  main_menu
 end
 
 ####### for option 4 ###########
@@ -294,9 +375,10 @@ def get_random_opportunity
   rand_opp = Opportunity.return_random
   rand_title = rand_opp.title
   rand_summary = rand_opp.summary
-  puts "Why don't you try: #{rand_title}?\n\nThey aim to :#{rand_summary}!"
+  puts "Why don't you try: ".bold + "#{rand_title}?\n"
+  puts "They aim to: ".bold + "#{rand_summary}!"
   signup?(rand_opp)
-  main_menu
+  main_menu?
 end
 
 ####### for option 5 ###########
@@ -306,36 +388,52 @@ def get_5_most_desperate
   most_desperate = Opportunity.most_desperate_opportunities
   display_list(map_formatted_string(most_desperate))
   offer_signup(most_desperate)
-  main_menu
+  main_menu?
 end
 
 ####### for option 6 #########
 
 #puts all user signups to the console
 def display_users_signups
-  put_break
-  puts "Here is a list of all opportunities you've signed up for: ".bold
-  put_break
-  display_list($current_user.opportunities)
+ put_break
+ current_opportunities = $current_user.opportunities
+ if  current_opportunities.empty?
+   puts "You have not signed up for any opportunities yet."
+   main_menu?
+ else
+   puts "Here is a list of all opportunities you’ve signed up for: ".bold
+   put_break
+   display_list(current_opportunities)
+ end
+ current_opportunities
 end
 
 #calls delete signup method from User, puts confirmation to the console
-def user_delete(input)
-  opportunity = Opportunity.find_by_attribute(:title, input)
-  $current_user.delete_signup(opportunity)
-  puts "#{input} has now been deleted."
+def user_delete(opportunities, index)
+  deletable = opportunities[index]
+  instance = Opportunity.find_by_attribute(:title, deletable)
+  $current_user.delete_signup(instance)
+  puts "#{deletable} has now been deleted."
 end
 
 #gets user input og title
-def get_user_delete
-  puts "What is the title of the opportunity you would like to cancel?"
-  input = user_input("Title", :title)
+def get_user_delete(opportunities)
+  puts "Please enter the index of the volunteer opportunity you would like to cancel:"
+  input = get_index_from_user(opportunities)
 end
 
 #main delete signup method
-def delete_signup
+def delete_my_signup
   put_break
+  opportunities = display_users_signups
+  index = get_user_delete(opportunities)
+  user_delete(opportunities, index)
+  main_menu?
+end
+
+######## option 7 #########
+
+def display_my_signups
   display_users_signups
-  user_delete(get_user_delete)
-  main_menu
+  main_menu?
 end
