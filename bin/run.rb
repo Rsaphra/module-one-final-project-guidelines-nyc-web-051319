@@ -1,8 +1,7 @@
 require_relative '../config/environment'
 
+welcome
 login
+main_menu
 
-
-
-
-puts "HELLO WORLD"
+puts "GOOD BYE!"

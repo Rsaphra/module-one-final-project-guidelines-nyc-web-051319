@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_29_173610) do
+ActiveRecord::Schema.define(version: 2019_05_29_213545) do
 
   create_table "opportunities", force: :cascade do |t|
     t.string "org_title"
     t.string "summary"
-    t.integer "zipcode"
+    t.string "zipcode"
     t.string "category_desc"
     t.integer "vol_requests"
     t.string "recurrence_type"

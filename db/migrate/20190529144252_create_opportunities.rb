@@ -3,7 +3,7 @@ class CreateOpportunities < ActiveRecord::Migration[5.0]
     create_table :opportunities do |t|
       t.string :org_title
       t.string :summary
-      t.integer :zipcode
+      t.string :zipcode
       t.string :borough
       t.string :category_desc
       t.integer :vol_requests
